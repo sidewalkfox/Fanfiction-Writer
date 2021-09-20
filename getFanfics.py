@@ -11,9 +11,10 @@ import workIds as wi
 ficIds = [wi.csvName + '.csv']
 isCsv = (len(ficIds) == 1 and '.csv' in ficIds[0]) 
 csvOut = 'works.csv'
-includeBookmarks = False
+language = 'English'
+getExplicit = False
 
-#Work scrape delay, must be 5 or higher to not violate tos
+#Work scrap delay, must be 5 or higher to not violate tos
 delay = 5
 
 def getTagInfo(category, meta):
@@ -141,7 +142,7 @@ def accessDenied(soup):
 	return False
 
 #Writes all information into a csv file
-def writeCsv(ficId, includeBookmarks, writer, errorwriter, headerInfo=''):
+def writeCsv(ficId, language, writer, errorwriter, headerInfo=''):
 	print('Scraping ', ficId)
 	url = 'http://archiveofourown.org/works/'+str(ficId)+'?view_adult=true'
 	headers = {'user-agent' : headerInfo}
@@ -162,31 +163,31 @@ def writeCsv(ficId, includeBookmarks, writer, errorwriter, headerInfo=''):
 		hiddenKudos = getKudos(soup.find('span', class_='kudos_expanded hidden'))
 		allKudos = visibleKudos + hiddenKudos
 
-		#Gets bookmarks
-		if (includeBookmarks):
-			bookmarkUrl = 'http://archiveofourown.org/works/'+str(ficId)+'/bookmarks'
-			allBookmarks = getBookmarks(bookmarkUrl, headerInfo)
+		#Checks if work is in the correct language
+		if language != False and language != stats[0]:
+			print('This work is not in ' + language + ', skipping...')
+		elif(getExplicit == False and tags[0][0] == 'Explicit' or tags[0][0] == 'Mature'):
+			print('This work is explicit, skiping...')
 		else:
-			allBookmarks = []
-		#Gets the work from ao3
-		content = soup.find("div", id= "chapters")
-		chapters = content.select('p')
-		chaptertext = '\n\n'.join([unidecode(chapter.text) for chapter in chapters])
-		row = [ficId] + [title] + [author] + list(map(lambda x: ', '.join(x), tags)) + stats + [allKudos] + [allBookmarks] + [chaptertext]
-		try:
-			writer.writerow(row)
-		except:
-			print('Unexpected error: ', sys.exc_info()[0])
-			errorRow = [ficId] +  [sys.exc_info()[0]]
-			errorwriter.writerow(errorRow)
-		print('Done.')
+			#Gets the work from ao3
+			content = soup.find("div", id= "chapters")
+			chapters = content.select('p')
+			chaptertext = '\n\n'.join([unidecode(chapter.text) for chapter in chapters])
+			row = [ficId] + [title] + [author] + list(map(lambda x: ', '.join(x), tags)) + stats + [allKudos] + [chaptertext]
+			try:
+				writer.writerow(row)
+			except:
+				print('Unexpected error: ', sys.exc_info()[0])
+				errorRow = [ficId] +  [sys.exc_info()[0]]
+				errorwriter.writerow(errorRow)
+			print('Done.')
 
 #This is called to start the program
 def main():
 	os.chdir(os.getcwd())
 	with open(csvOut, 'w') as f_out:
 		writer = csv.writer(f_out)
-		with open(csvOut + "Errors", 'a') as e_out:
+		with open("errors", 'a') as e_out:
 			errorwriter = csv.writer(e_out)
 			#Writes a header if the csv doesn't exist
 			if os.stat(csvOut).st_size == 0:
@@ -200,10 +201,10 @@ def main():
 					for row in reader:
 						if not row:
 							continue
-						writeCsv(row[0], includeBookmarks, writer, errorwriter)
+						writeCsv(row[0], language, writer, errorwriter)
 						time.sleep(delay)
 
 			else:
 				for ficId in ficIds:
-					writeCsv(ficId, includeBookmarks, writer, errorwriter)
+					writeCsv(ficId, language, writer, errorwriter)
 					time.sleep(delay)

@@ -1,31 +1,56 @@
 from tkinter import *
 import tkinter
+import webbrowser
+import os
 import workIds as wi
 import getFanfics as gf
 #import this
 
-##Functions
-#Rounds to the nearest multiple of 10
-def getEstimated():
-	numReq = wi.requestedFics
-	delay = gf.delay
-	total = str(round((numReq * delay)/10)*10)
-	return total
+#Variables
+explicitTerms = ['True', 'False']
 
-#Converts search term to workable url
+##Functions
 def getIds():
-	url = searchBox.get("1.0","end-1c")
+	#Converts search term to workable url
+	url = searchBoxText.get("1.0","end-1c")
 	fixUrl = url.replace(' ', '+')
-	outUrl = "https://archiveofourown.org/works/search?utf8=%E2%9C%93&work_search%5Bquery%5D=" + fixUrl
+	outUrl = "https://archiveofourown.org/tags/" + fixUrl + "/works"
 	wi.url = outUrl
+
+	#Gets the number of requested works, defaults to 0
+	numWorks = numWorksText.get("1.0","end-1c")
+	if(numWorks == ''):
+		numWorks = 0
+	else:
+		numWorks = int(numWorks)
+	wi.requestedFics = numWorks
+
 	wi.main()
+
+def getWorks():
+	#Tells the program if explicit materal should be used
+	if(explicitSet.get() == 'True'):
+		gf.getExplicit = True
+	else:
+		gf.getExplicit = False
+
+	gf.main()
+
+#Opens the GitHub page
+def info():
+	print('Opening GiHub')
+	webbrowser.open_new("https://github.com/sidewalkchalka/Fan-Fiction-Writer")
+
+#Clears the console
+def clearConsole():
+	os.system('cls' if os.name=='nt' else 'clear')
 
 ##TKinter
 root = tkinter.Tk()
 
 #Stuff
 root.title("FFW")
-icon = PhotoImage(file="images/paw.png")
+icon = PhotoImage(file="images/icon.png")
 root.iconphoto(False, icon)
 root.resizable(False, False)
 
@@ -36,17 +61,49 @@ getIdsButton.grid(row=0,column=0)
 
 #Get Work button
 getWorkImages = PhotoImage(file="images/getWorks.png")
-getWorkButton = Button(root, image=getWorkImages, command=lambda:gf.main())
+getWorkButton = Button(root, image=getWorkImages, command=lambda:getWorks())
 getWorkButton.grid(row=0,column=1)
 
-#Search term
-searchBox = Text(root, height=1, width=18)
-searchBox.grid(row=1,column=0)
+#Get Finished button
+getFinImages = PhotoImage(file="images/getFin.png")
+getFinButton = Button(root, image=getFinImages, command=lambda:gf.main())
+getFinButton.grid(row=0,column=2)
 
-#Estimated time
-estimated = Text(root, height=1, width=18, state='disabled')
-estimated.insert(END, 'Estimated time: ' + getEstimated())
-estimated.grid(row=1,column=1)
+#Search term
+searchLabel = Label(root, text='Search term')
+searchBoxText = Text(root, height=1, width=18)
+searchLabel.grid(row=1,column=0)
+searchBoxText.grid(row=2,column=0)
+
+#Number of works to collect
+numWorksLabel = Label(root, text='Number of works to collect')
+numWorksText = Text(root, height=1, width=18)
+numWorksLabel.grid(row=1,column=1)
+numWorksText.grid(row=2,column=1)
+
+#Allow nsfw works
+explicitLabel = Label(root, text='Allow explicit works?')
+explicitLabel.grid(row=1,column=2)
+
+explicitSet = StringVar(root)
+explicitSet.set(explicitTerms[0])
+explicitDown = OptionMenu(root, explicitSet, *explicitTerms)
+explicitDown.config(width=18,height=1)
+explicitDown.grid(row=2,column=2)
+
+#System frame
+sysFrame = Frame(root)
+sysFrame.grid(row=0,column=3)
+
+#Trash button
+trashImage = PhotoImage(file="images/trash.png")
+trashButton = Button(sysFrame, image=trashImage, command=lambda:clearConsole())
+trashButton.pack(side="top")
+
+#Info button
+infoImage = PhotoImage(file="images/info.png")
+infoButton = Button(sysFrame, image=infoImage, command=lambda:info())
+infoButton.pack(side="bottom")
 
 #Finishies Tkinter code
 root.mainloop()

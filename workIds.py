@@ -7,7 +7,7 @@ import csv
 pageEmpty = False
 baseUrl = ""
 url = ''
-requestedFics = 5
+requestedFics = 0
 recordedFics = 0
 csvName = "workIds"
 
@@ -83,7 +83,7 @@ def notFinished():
     if (pageEmpty):
         return False
 
-    if (requestedFics == -1):
+    if (requestedFics == 0):
         return True
     else:
         if (recordedFics < requestedFics):
@@ -102,6 +102,11 @@ def processIds(headerInfo=''):
 
 #Gets called to start the program
 def main():
-    print ("processing...")
+    #Checks if the number of requested works has been set
+    if(requestedFics == 0):
+        print('Number of requested works not set. The program will collect works until there are none left.')
+    else:
+        print ("processing...")
+        
     processIds()
     print ("Finished processing")
