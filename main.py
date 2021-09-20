@@ -4,12 +4,15 @@ import webbrowser
 import os
 import workIds as wi
 import getFanfics as gf
+import prepWorks as pw
+import createWork as cw
 #import this
 
 #Variables
 explicitTerms = ['True', 'False']
 
 ##Functions
+#Gets Ids
 def getIds():
 	#Converts search term to workable url
 	url = searchBoxText.get("1.0","end-1c")
@@ -23,10 +26,14 @@ def getIds():
 		numWorks = 0
 	else:
 		numWorks = int(numWorks)
-	wi.requestedFics = numWorks
 
+	if(numWorks < 0):
+		numWorks = 0
+
+	wi.requestedFics = numWorks
 	wi.main()
 
+#Uses the ids to get works
 def getWorks():
 	#Tells the program if explicit materal should be used
 	if(explicitSet.get() == 'True'):
@@ -35,6 +42,14 @@ def getWorks():
 		gf.getExplicit = False
 
 	gf.main()
+
+#Prepares the collected works to be run by the ai
+def prepWork():
+	pw.main()
+
+#Uses the prepared works to create a new story
+def getFin():
+	cw.main()
 
 #Opens the GitHub page
 def info():
@@ -64,25 +79,32 @@ getWorkImages = PhotoImage(file="images/getWorks.png")
 getWorkButton = Button(root, image=getWorkImages, command=lambda:getWorks())
 getWorkButton.grid(row=0,column=1)
 
+#Prepare Work button
+preWorkImages = PhotoImage(file="images/prepWork.png")
+preWorkButton = Button(root, image=preWorkImages, command=lambda:prepWork())
+preWorkButton.grid(row=0,column=2)
+
 #Get Finished button
 getFinImages = PhotoImage(file="images/getFin.png")
-getFinButton = Button(root, image=getFinImages, command=lambda:gf.main())
-getFinButton.grid(row=0,column=2)
+getFinButton = Button(root, image=getFinImages, command=lambda:getFin())
+getFinButton.grid(row=0,column=3)
 
 #Search term
 searchLabel = Label(root, text='Search term')
 searchBoxText = Text(root, height=1, width=18)
+searchBoxText.insert(END, 'Foxes')
 searchLabel.grid(row=1,column=0)
 searchBoxText.grid(row=2,column=0)
 
 #Number of works to collect
 numWorksLabel = Label(root, text='Number of works to collect')
 numWorksText = Text(root, height=1, width=18)
+numWorksText.insert(END, '5')
 numWorksLabel.grid(row=1,column=1)
 numWorksText.grid(row=2,column=1)
 
 #Allow nsfw works
-explicitLabel = Label(root, text='Allow explicit works?')
+explicitLabel = Label(root, text='Allow explicit works')
 explicitLabel.grid(row=1,column=2)
 
 explicitSet = StringVar(root)
@@ -93,17 +115,17 @@ explicitDown.grid(row=2,column=2)
 
 #System frame
 sysFrame = Frame(root)
-sysFrame.grid(row=0,column=3)
+sysFrame.grid(row=0,column=4)
 
 #Trash button
 trashImage = PhotoImage(file="images/trash.png")
 trashButton = Button(sysFrame, image=trashImage, command=lambda:clearConsole())
-trashButton.pack(side="top")
+trashButton.pack()
 
 #Info button
 infoImage = PhotoImage(file="images/info.png")
 infoButton = Button(sysFrame, image=infoImage, command=lambda:info())
-infoButton.pack(side="bottom")
+infoButton.pack()
 
 #Finishies Tkinter code
 root.mainloop()

@@ -17,6 +17,7 @@ seenIds = []
 #Must be over 5
 delay = 5
 
+##Functions
 def getIds(header_info=''):
     global pageEmpty
     headers = {'user-agent' : header_info}
@@ -104,7 +105,7 @@ def processIds(headerInfo=''):
 def main():
     #Checks if the number of requested works has been set
     if(requestedFics == 0):
-        print('Number of requested works not set. The program will collect works until there are none left.')
+        print('WARNING! Number of requested works not set. Will collect all avalible works.\nprocessing...')
     else:
         print ("processing...")
         

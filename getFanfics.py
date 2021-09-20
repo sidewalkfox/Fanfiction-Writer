@@ -17,6 +17,7 @@ getExplicit = False
 #Work scrap delay, must be 5 or higher to not violate tos
 delay = 5
 
+##Functions
 def getTagInfo(category, meta):
 	try:
 		tagList = meta.find("dd", class_=str(category) + ' tags').find_all(class_="tag")
@@ -173,7 +174,7 @@ def writeCsv(ficId, language, writer, errorwriter, headerInfo=''):
 			content = soup.find("div", id= "chapters")
 			chapters = content.select('p')
 			chaptertext = '\n\n'.join([unidecode(chapter.text) for chapter in chapters])
-			row = [ficId] + [title] + [author] + list(map(lambda x: ', '.join(x), tags)) + stats + [allKudos] + [chaptertext]
+			row = ['New work\n'] + [chaptertext]
 			try:
 				writer.writerow(row)
 			except:
@@ -187,13 +188,8 @@ def main():
 	os.chdir(os.getcwd())
 	with open(csvOut, 'w') as f_out:
 		writer = csv.writer(f_out)
-		with open("errors", 'a') as e_out:
+		with open("errors.csv", 'a') as e_out:
 			errorwriter = csv.writer(e_out)
-			#Writes a header if the csv doesn't exist
-			if os.stat(csvOut).st_size == 0:
-				print('Writing a header row for the csv.')
-				header = ['workId', 'title', 'author', 'rating', 'category', 'fandom', 'relationship', 'character', 'additional tags', 'language', 'published', 'status', 'status date', 'words', 'chapters', 'comments', 'kudos', 'bookmarks', 'hits', 'all_kudos', 'all_bookmarks', 'body']
-				writer.writerow(header)
 			if isCsv:
 				csvFname = ficIds[0]
 				with open(csvFname, 'r+') as f_in:
