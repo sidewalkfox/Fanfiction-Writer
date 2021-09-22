@@ -10,7 +10,7 @@ import workIds as wi
 #Variables
 ficIds = [wi.csvName + '.csv']
 isCsv = (len(ficIds) == 1 and '.csv' in ficIds[0]) 
-csvOut = 'works.csv'
+csvOut = 'works.txt'
 language = 'English'
 getExplicit = False
 
@@ -70,17 +70,6 @@ def getKudos(meta):
 		
 		return users
 	return []
-
-#Gets author(s)
-def getAuthors(meta):
-	tags = meta.contents
-	authors = []
-
-	for tag in tags:
-		if tag.name == 'a':
-			authors.append(tag.contents[0])
-
-	return authors
 
 #Get bookmarks
 def getBookmarks(url, headerInfo):
@@ -143,7 +132,7 @@ def accessDenied(soup):
 	return False
 
 #Writes all information into a csv file
-def writeCsv(ficId, language, writer, errorwriter, headerInfo=''):
+def writeCsv(ficId, language, writer, headerInfo=''):
 	print('Scraping ', ficId)
 	url = 'http://archiveofourown.org/works/'+str(ficId)+'?view_adult=true'
 	headers = {'user-agent' : headerInfo}
@@ -152,22 +141,17 @@ def writeCsv(ficId, language, writer, errorwriter, headerInfo=''):
 	soup = BeautifulSoup(src, 'html.parser')
 	if (accessDenied(soup)):
 		print('Access Denied')
-		errorRow = [ficId] + ['Access Denied']
-		errorwriter.writerow(errorRow)
+		errorRow = ' '.join(ficId) + ' Access Denied'
+		print('ERROR: ' + errorRow)
 	else:
 		meta = soup.find("dl", class_="work meta group")
-		author = getAuthors(soup.find("h3", class_="byline heading"))
 		tags = getTags(meta)
 		stats = getStats(meta)
-		title = unidecode(soup.find("h2", class_="title heading").string).strip()
-		visibleKudos = getKudos(soup.find('p', class_='kudos'))
-		hiddenKudos = getKudos(soup.find('span', class_='kudos_expanded hidden'))
-		allKudos = visibleKudos + hiddenKudos
 
 		#Checks if work is in the correct language
 		if language != False and language != stats[0]:
 			print('This work is not in ' + language + ', skipping...')
-		elif(getExplicit == False and tags[0][0] == 'Explicit' or tags[0][0] == 'Mature'):
+		elif((getExplicit == False) and (tags[0][0] == 'Explicit' or tags[0][0] == 'Mature' or tags[0][0] == 'Not Rated')):
 			print('This work is explicit, skiping...')
 		else:
 			#Gets the work from ao3
@@ -179,8 +163,8 @@ def writeCsv(ficId, language, writer, errorwriter, headerInfo=''):
 				writer.writerow(row)
 			except:
 				print('Unexpected error: ', sys.exc_info()[0])
-				errorRow = [ficId] +  [sys.exc_info()[0]]
-				errorwriter.writerow(errorRow)
+				errorRow = ' '.join(ficId) + ' ' + ' '.join([sys.exc_info()[0]])
+				print('ERROR: ' + errorRow)
 			print('Done.')
 
 #This is called to start the program
@@ -188,19 +172,17 @@ def main():
 	os.chdir(os.getcwd())
 	with open(csvOut, 'w') as f_out:
 		writer = csv.writer(f_out)
-		with open("errors.csv", 'a') as e_out:
-			errorwriter = csv.writer(e_out)
-			if isCsv:
-				csvFname = ficIds[0]
-				with open(csvFname, 'r+') as f_in:
-					reader = csv.reader(f_in)
-					for row in reader:
-						if not row:
-							continue
-						writeCsv(row[0], language, writer, errorwriter)
-						time.sleep(delay)
-
-			else:
-				for ficId in ficIds:
-					writeCsv(ficId, language, writer, errorwriter)
+		if isCsv:
+			csvFname = ficIds[0]
+			with open(csvFname, 'r+') as f_in:
+				reader = csv.reader(f_in)
+				for row in reader:
+					if not row:
+						continue
+					writeCsv(row[0], language, writer)
 					time.sleep(delay)
+
+		else:
+			for ficId in ficIds:
+				writeCsv(ficId, language, writer)
+				time.sleep(delay)
