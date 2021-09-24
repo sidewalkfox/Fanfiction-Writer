@@ -35,7 +35,7 @@ def getIds():
 
 #Uses the ids to get works
 def getWorks():
-	#Tells the program if explicit materal should be used
+	#Tells the program if explicit material should be used
 	if(explicitSet.get() == 'True'):
 		gf.getExplicit = True
 	else:
@@ -113,7 +113,6 @@ numWorksText.grid(row=2,column=1)
 #Allow nsfw works
 explicitLabel = Label(root, text='Allow explicit works')
 explicitLabel.grid(row=1,column=2)
-
 explicitSet = StringVar(root)
 explicitSet.set(explicitTerms[0])
 explicitDown = OptionMenu(root, explicitSet, *explicitTerms)
@@ -123,14 +122,13 @@ explicitDown.grid(row=2,column=2)
 #Train new model
 trainLabel = Label(root, text='Train new model')
 trainLabel.grid(row=1,column=3)
-
 trainSet = StringVar(root)
 trainSet.set(trainTerms[0])
 trainDown = OptionMenu(root, trainSet, *trainTerms)
 trainDown.config(width=18,height=1)
 trainDown.grid(row=2,column=3)
 
-#System frame
+#Trash and info button frame
 sysFrame = Frame(root)
 sysFrame.grid(row=0,column=4)
 

@@ -1,21 +1,21 @@
 import tensorflow as tf
 import numpy as np
 import os
-import prepWorks as pw
 import workIds as wi
+import prepWorks as pw
 
 ##Variables
-#Name of the loaded work
+#File location of the loaded text converted to absolute path
 prepWork = os.path.abspath(pw.textOut)
 
-#Train model stuff... DO NOT TOUCH
+#Train model stuff
 training = False
-
-#Training constants
 numGenerate = 1000
 epochs = 25
 startString = 'The '
 
+#Training constants
+checkpointDir = './training_checkpoints'
 seqLenth = 100
 batchSize = 64
 bufferSize = 10000
@@ -23,11 +23,8 @@ embeddingDim = 256
 rnnUnits = 1024
 temperature = 1.0
 
-checkpointDir = './training_checkpoints'
-
 #Finished work name
 reqFics = sum(1 for line in open(wi.csvName + '.csv')) // 2
-print(reqFics)
 
 ##Functions
 #Saves the generated text into a file
@@ -53,9 +50,7 @@ def main():
 
 	#Converts text to a number that represents it
 	textAsInt = np.array([char2idx[char] for char in text])
-
 	charDataset = tf.data.Dataset.from_tensor_slices(textAsInt)
-
 	sequences = charDataset.batch(seqLenth+1, drop_remainder=True)
 
 	def splitInputTarget(chunk):
@@ -116,4 +111,4 @@ def main():
 	#Gets generated text and runs the save function
 	genText = generateText(model, startString=startString)
 	genFile(genText)
-	print('Generated work')
+	print('Finished generating work')

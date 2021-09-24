@@ -1,34 +1,33 @@
-import requests
 from bs4 import BeautifulSoup
-import time
-import os
-import csv
-import sys
 from unidecode import unidecode
+import requests
+import csv
+import time
+import sys
+import os
 import workIds as wi
 
 #Variables
 ficIds = [wi.csvName + '.csv']
-isCsv = (len(ficIds) == 1 and '.csv' in ficIds[0]) 
 csvOut = 'works.txt'
 language = 'English'
 getExplicit = False
 
-#Work scrap delay, must be 5 or higher to not violate tos
-delay = 5
+#Work scrap delay obtained from workIds file
+delay = wi.delay
 
 ##Functions
 def getTagInfo(category, meta):
 	try:
 		tagList = meta.find("dd", class_=str(category) + ' tags').find_all(class_="tag")
-	except AttributeError as e:
+	except AttributeError:
 		return []
 	return [unidecode(result.text) for result in tagList] 
 	
 #Gets information about works
 def getStats(meta):
+	#Defines work categories
 	categories = ['language', 'published', 'status', 'words', 'chapters', 'comments', 'kudos', 'bookmarks', 'hits'] 
-
 	stats = list(map(lambda category: meta.find("dd", class_=category), categories))
 
 	if not stats[2]:
@@ -57,12 +56,12 @@ def getTags(meta):
 
 #Gets kudos
 def getKudos(meta):
-	if (meta):
+	if(meta):
+		#Gets kudos from work
 		users = []
-		## hunt for kudos' contents
 		kudos = meta.contents
 
-		# extract user names
+		#Extracts users from kudos variable
 		for kudo in kudos:
 			if kudo.name == 'a':
 				if 'more users' not in kudo.contents[0] and '(collapse)' not in kudo.contents[0]:
@@ -71,7 +70,7 @@ def getKudos(meta):
 		return users
 	return []
 
-#Get bookmarks
+#Gets bookmarks
 def getBookmarks(url, headerInfo):
 	bookmarks = []
 	headers = {'user-agent' : headerInfo}
@@ -82,11 +81,11 @@ def getBookmarks(url, headerInfo):
 	time.sleep(delay)
 	soup = BeautifulSoup(src, 'html.parser')
 
-	sys.stdout.write('scraping bookmarks ')
+	sys.stdout.write('Scraping bookmarks ')
 	sys.stdout.flush()
 
 	#Finds all pages
-	if (soup.find('ol', class_='pagination actions')):
+	if(soup.find('ol', class_='pagination actions')):
 		pages = soup.find('ol', class_='pagination actions').findChildren("li" , recursive=False)
 		maxPages = int(pages[-2].contents[0].contents[0])
 		count = 1
@@ -100,7 +99,7 @@ def getBookmarks(url, headerInfo):
 			bookmarks += getUsers(tags)
 
 			#Goes to next page
-			count+=1
+			count += 1
 			req = requests.get(url+'?page='+str(count), headers=headers)
 			src = req.text
 			soup = BeautifulSoup(src, 'html.parser')
@@ -111,11 +110,10 @@ def getBookmarks(url, headerInfo):
 		tags = soup.findAll('h5', class_='byline heading')
 		bookmarks += getUsers(tags)
 
-	print('')
 	return bookmarks
 
-#Gets user bookmarks
-def getUsers (meta):
+#Gets users from meta data
+def getUsers(meta):
 	users = []
 	for tag in meta:
 			user = tag.findChildren("a" , recursive=False)[0].contents[0]
@@ -125,9 +123,9 @@ def getUsers (meta):
 	
 #Runs if the id is invalid
 def accessDenied(soup):
-	if (soup.find(class_="flash error")):
+	if(soup.find(class_="flash error")):
 		return True
-	if (not soup.find(class_="work meta group")):
+	if(not soup.find(class_="work meta group")):
 		return True
 	return False
 
@@ -139,7 +137,7 @@ def writeCsv(ficId, language, writer, headerInfo=''):
 	req = requests.get(url, headers=headers)
 	src = req.text
 	soup = BeautifulSoup(src, 'html.parser')
-	if (accessDenied(soup)):
+	if(accessDenied(soup)):
 		print('Access Denied')
 		errorRow = ' '.join(ficId) + ' Access Denied'
 		print('ERROR: ' + errorRow)
@@ -158,7 +156,7 @@ def writeCsv(ficId, language, writer, headerInfo=''):
 			content = soup.find("div", id= "chapters")
 			chapters = content.select('p')
 			chaptertext = '\n\n'.join([unidecode(chapter.text) for chapter in chapters])
-			row = ['New work\n'] + [chaptertext]
+			row = [chaptertext]
 			try:
 				writer.writerow(row)
 			except:
@@ -172,17 +170,11 @@ def main():
 	os.chdir(os.getcwd())
 	with open(csvOut, 'w') as f_out:
 		writer = csv.writer(f_out)
-		if isCsv:
-			csvFname = ficIds[0]
-			with open(csvFname, 'r+') as f_in:
-				reader = csv.reader(f_in)
-				for row in reader:
-					if not row:
-						continue
-					writeCsv(row[0], language, writer)
-					time.sleep(delay)
-
-		else:
-			for ficId in ficIds:
-				writeCsv(ficId, language, writer)
+		csvFname = ficIds[0]
+		with open(csvFname, 'r+') as f_in:
+			reader = csv.reader(f_in)
+			for row in reader:
+				if not row:
+					continue
+				writeCsv(row[0], language, writer)
 				time.sleep(delay)
