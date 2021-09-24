@@ -50,7 +50,7 @@ def prepWork():
 #Uses the prepared works to create a new story
 def getFin():
 	#Tells the program if it needs to train a new model
-	if trainSet.get() == 'True':
+	if(trainSet.get() == 'True'):
 		cw.training = True
 	else:
 		cw.training = False

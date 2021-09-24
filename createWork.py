@@ -11,7 +11,7 @@ prepWork = os.path.abspath(pw.textOut)
 #Train model stuff
 training = False
 numGenerate = 1000
-epochs = 25
+epochs = 35
 startString = 'The '
 
 #Training constants
@@ -72,14 +72,19 @@ def main():
 		])
 		return model
 
-	#This will run when the program is creating a new trained model
-	if training == True:
+	#This will run when the program is creating a trained model
+	if(training == True):
 		model = buildModel(vocabSize=len(vocab), embeddingDim=embeddingDim, rnnUnits=rnnUnits, batchSize=batchSize)
 
 		def loss(labels, logits):
 			return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)
 
 		model.compile(optimizer='adam', loss=loss)
+
+		checkpointPrefix = os.path.join(checkpointDir, 'chkpt_{epoch}')
+		checkpointCallback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpointPrefix, save_weights_only=True)
+
+		history = model.fit(dataset, epochs=epochs, callbacks=[checkpointCallback])
 
 	#Collects information about the trained model and presents them
 	model = buildModel(vocabSize, embeddingDim, rnnUnits, batchSize=1)
