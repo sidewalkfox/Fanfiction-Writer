@@ -7,8 +7,6 @@ textOut = 'prepWork.txt'
 
 ##Functions
 def main():
-	#Fixes syntax of document
-
 	#List of things to replace with nothing
 	deleteList = ['(See the end of the chapter for  notes.)', '","', '\n']
 
@@ -17,6 +15,7 @@ def main():
 	replaceList = ['"New work', '""']
 	replaceTerms = ['\n\n', '"']
 
+	#Opens text file
 	with open(textFile) as txtIn, open(textOut, 'w+') as txtOut:
 		#For every line in the text file
 		x=0
@@ -33,8 +32,8 @@ def main():
 			for word in replaceList:
 				line = line.replace(word, replaceTerms[i])
 				i = i+1
-			#Removes duplicate characters
+
+			#Replaces multiple spaces with a single space
 			line = re.sub("\ +", " ", line)
 
 			txtOut.write(line)
-

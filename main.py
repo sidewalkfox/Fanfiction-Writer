@@ -10,6 +10,7 @@ import createWork as cw
 
 #Variables
 explicitTerms = ['True', 'False']
+trainTerms = ['False', 'True']
 
 ##Functions
 #Gets Ids
@@ -26,7 +27,6 @@ def getIds():
 		numWorks = 0
 	else:
 		numWorks = int(numWorks)
-
 	if(numWorks < 0):
 		numWorks = 0
 
@@ -49,11 +49,18 @@ def prepWork():
 
 #Uses the prepared works to create a new story
 def getFin():
+	#Tells the program if it needs to train a new model
+	if trainSet.get() == 'True':
+		cw.training = True
+	else:
+		cw.training = False
+
+	#cw.reqFics = numWorks
 	cw.main()
 
 #Opens the GitHub page
 def info():
-	print('Opening GiHub')
+	print('Opening GitHub')
 	webbrowser.open_new("https://github.com/sidewalkchalka/Fan-Fiction-Writer")
 
 #Clears the console
@@ -63,7 +70,7 @@ def clearConsole():
 ##TKinter
 root = tkinter.Tk()
 
-#Stuff
+#Window settings
 root.title("FFW")
 icon = PhotoImage(file="images/icon.png")
 root.iconphoto(False, icon)
@@ -92,7 +99,7 @@ getFinButton.grid(row=0,column=3)
 #Search term
 searchLabel = Label(root, text='Search term')
 searchBoxText = Text(root, height=1, width=18)
-searchBoxText.insert(END, 'Foxes')
+searchBoxText.insert(END, 'furry')
 searchLabel.grid(row=1,column=0)
 searchBoxText.grid(row=2,column=0)
 
@@ -112,6 +119,16 @@ explicitSet.set(explicitTerms[0])
 explicitDown = OptionMenu(root, explicitSet, *explicitTerms)
 explicitDown.config(width=18,height=1)
 explicitDown.grid(row=2,column=2)
+
+#Train new model
+trainLabel = Label(root, text='Train new model')
+trainLabel.grid(row=1,column=3)
+
+trainSet = StringVar(root)
+trainSet.set(trainTerms[0])
+trainDown = OptionMenu(root, trainSet, *trainTerms)
+trainDown.config(width=18,height=1)
+trainDown.grid(row=2,column=3)
 
 #System frame
 sysFrame = Frame(root)

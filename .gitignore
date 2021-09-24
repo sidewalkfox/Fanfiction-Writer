@@ -1,3 +1,10 @@
+#Ignore
 __pycache__
+training_checkpoints
+trained_models
 *.csv
 *.txt
+
+#Don't ignore
+!requirements.txt
+!generated_works/**
