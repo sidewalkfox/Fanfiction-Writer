@@ -37,3 +37,4 @@ def main():
 		textContent = re.sub("\ +", " ", textContent)
 		textContent = re.sub("\\n+", "\n\n", textContent)
 		txtOut.write(textContent)
+		print('Finished preparing')

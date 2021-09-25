@@ -131,7 +131,7 @@ def accessDenied(soup):
 
 #Writes all information into a csv file
 def writeCsv(ficId, language, writer, headerInfo=''):
-	print('Scraping ', ficId)
+	print('Scraping', ficId)
 	url = 'http://archiveofourown.org/works/'+str(ficId)+'?view_adult=true'
 	headers = {'user-agent' : headerInfo}
 	req = requests.get(url, headers=headers)
@@ -178,3 +178,5 @@ def main():
 					continue
 				writeCsv(row[0], language, writer)
 				time.sleep(delay)
+			
+			print('Finished scraping')

@@ -8,7 +8,7 @@ import prepWorks as pw
 #File location of the loaded text converted to absolute path
 prepWork = os.path.abspath(pw.textOut)
 
-#Train model stuff
+#Train model variables
 training = False
 numGenerate = 1000
 epochs = 35
@@ -24,7 +24,10 @@ rnnUnits = 1024
 temperature = 1.0
 
 #Finished work name
-reqFics = sum(1 for line in open(wi.csvName + '.csv')) // 2
+try:
+	reqFics = sum(1 for line in open(wi.csvName + '.csv')) // 2
+except:
+	reqFics = wi.csvName + '.csv'
 
 ##Functions
 #Saves the generated text into a file

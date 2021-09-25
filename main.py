@@ -43,7 +43,7 @@ def getWorks():
 
 	gf.main()
 
-#Prepares the collected works to be run by the ai
+#Prepares the collected works to be run by the AI
 def prepWork():
 	pw.main()
 
