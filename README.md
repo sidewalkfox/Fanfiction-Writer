@@ -51,7 +51,7 @@ This button will clear the console.
 **Troubleshooting**\
 Based on the jankiness of Beautiful Soup and the complexity of Tensorflow, there aren't many errors that could be built in. The best way to find an error is always looking at the console. Make sure that the steps are done in order, left to right. If you collect new works, a new model will have to be trained.
 
-**Advanced settings**\
+**Advanced settings**
 - To change the language that works will be collected in, open the `getFanfics.py` file and change the language variable. Make sure that it is capitalized and spelled correctly.
 - To change any of output file names, change "csvName" in `workIds.py`, "csvOut" in `getFanfics.py`, and "textOut" in `prepWorks.py`.
 - If you want your output files to be more or less predictable, you can change the "temperature" in `createWork.py`. A higher number will result in more random text. This is not recommended.
