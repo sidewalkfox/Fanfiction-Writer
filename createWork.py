@@ -10,8 +10,8 @@ prepWork = os.path.abspath(pw.textOut)
 
 #Train model variables
 training = False
-numGenerate = 1000
-epochs = 35
+numGenerate = 2000
+epochs = 25
 startString = 'The '
 
 #Training constants

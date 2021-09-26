@@ -70,7 +70,7 @@ def updateNextPage():
 #Writes ids and url to .csv file
 def writeIds(ids):
     global recordedFics
-    with open(csvName + ".csv", 'w') as csvfile:
+    with open(csvName + ".csv", 'a') as csvfile:
         wr = csv.writer(csvfile, delimiter=',')
         for id in ids:
             if(notFinished()):
@@ -103,6 +103,11 @@ def processIds(headerInfo=''):
 
 #Gets called to start the program
 def main():
+    #Clears the workIds file
+    idFile = open(csvName + ".csv", "w")
+    idFile.truncate()
+    idFile.close()
+
     #Checks if the number of requested works has been set
     if(requestedFics == 0):
         print('WARNING! Number of requested works not set. Will collect all available works.\nprocessing...')
