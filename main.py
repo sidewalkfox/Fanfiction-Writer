@@ -61,7 +61,7 @@ def getFin():
 #Opens the GitHub page
 def info():
 	print('Opening GitHub')
-	webbrowser.open_new("https://github.com/sidewalkchalka/Fan-Fiction-Writer")
+	webbrowser.open_new("https://github.com/sidewalkchalka/Fanfiction-Writer")
 
 #Clears the console
 def clearConsole():

@@ -1,4 +1,4 @@
-# Fan Fiction Writer
+# Fanfiction Writer
 ### Features
 - Collects work ids from Archive of Our Own
 - Collects works from Archive of Our Own
