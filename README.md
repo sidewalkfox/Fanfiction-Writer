@@ -55,3 +55,6 @@ Based on the jankiness of Beautiful Soup and the complexity of Tensorflow, there
 - To change the language that works will be collected in, open the `getFanfics.py` file and change the language variable. Make sure that it is capitalized and spelled correctly.
 - To change any of output file names, change "csvName" in `workIds.py`, "csvOut" in `getFanfics.py`, and "textOut" in `prepWorks.py`.
 - If you want your output files to be more or less predictable, you can change the "temperature" in `createWork.py`. A higher number will result in more random text. This is not recommended.
+
+**Google Colab**\
+If you would like to open the project in Google Colab, open [Google Colab GitHub](https://colab.research.google.com/github/) and type `sidewalkchalka` in the search box. Under repository, select `sidewalkchalka/Fanfiction-Writer` from the drop down. Under branch, select `main`. Under path, find `Fanfiction Writer.ipynb` and select the box with the arrow to open the file in Google Colab.

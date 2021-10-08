@@ -10,8 +10,8 @@ textContent = ''
 def main():
 	global textContent
 	#List of things to replace with the list below them, replaceList[0] with be replaced with replaceTerms[0]
-	replaceList = ['(See the end of the chapter for  notes.)', '","', '"New work', '""']
-	replaceTerms = ['', '', '\n\n', '"']
+	replaceList = ['(See the end of the chapter for  notes.)', '(See the end of the chapter for notes.)', '","', '"New work', '""']
+	replaceTerms = ['', '', '', '\n\n', '"']
 
 	#Opens both text files
 	with open(textFile) as txtIn, open(textOut, 'w+') as txtOut:

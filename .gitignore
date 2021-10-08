@@ -1,5 +1,6 @@
 #Ignore
 __pycache__
+.ipynb_checkpoints
 training_checkpoints
 trained_models
 *.csv
