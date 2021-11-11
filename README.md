@@ -58,3 +58,6 @@ Based on the jankiness of Beautiful Soup and the complexity of Tensorflow, there
 
 **Google Colab**\
 If you would like to open the project in Google Colab, open [Google Colab GitHub](https://colab.research.google.com/github/) and type `sidewalkchalka` in the search box. Under repository, select `sidewalkchalka/Fanfiction-Writer` from the drop down. Under branch, select `main`. Under path, find `Fanfiction Writer.ipynb` and select the box with the arrow to open the file in Google Colab.
+
+**Tensorflow Vulnerabilities**\
+Due to a vulnerablility with Tensorflow 2.6.0, installing 2.6.1 is recommended but there may be compatibility issues while doing so.
